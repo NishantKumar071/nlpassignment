@@ -1,0 +1,46 @@
+!pip install -q gradio langdetect
+
+import gradio as gr
+from langdetect import detect, LangDetectException
+
+def detect_language(text):
+    if not text.strip():
+        return "Please enter some text."
+
+    try:
+        language = detect(text)
+
+        language_names = {
+            "en": "English",
+            "hi": "Hindi",
+            "fr": "French",
+            "de": "German",
+            "es": "Spanish",
+            "it": "Italian",
+            "pt": "Portuguese",
+            "ru": "Russian",
+            "ja": "Japanese",
+            "ko": "Korean",
+            "zh-cn": "Chinese",
+            "ar": "Arabic",
+            "bn": "Bengali",
+            "pa": "Punjabi"
+        }
+
+        return language_names.get(language, language)
+
+    except LangDetectException:
+        return "Could not detect the language."
+
+app = gr.Interface(
+    fn=detect_language,
+    inputs=gr.Textbox(
+        label="Enter your text",
+        placeholder="Type a sentence in any language..."
+    ),
+    outputs=gr.Textbox(label="Detected Language"),
+    title="NLP Language Detector",
+    description="Enter text and the application will detect its language."
+)
+
+app.launch(share=True)
